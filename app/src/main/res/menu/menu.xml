@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/action_new_sketch"
+        android:icon="@drawable/baseline_add_24"
+        android:title="New Sketch" />
+
+    <item
+        android:id="@+id/action_gallery"
+        android:icon="@drawable/gallary"
+        android:title="Gallery" />
+
+    <item
+        android:id="@+id/action_save"
+        android:icon="@drawable/save"
+        android:title="Save" />
+
+    <item
+        android:id="@+id/action_import"
+        android:icon="@drawable/save"
+        android:title="Import from Files" />
+
+    <item
+        android:id="@+id/action_export"
+        android:icon="@drawable/export"
+        android:title="Share / Export" />
+
+    <item
+        android:id="@+id/action_preferences"
+        android:icon="@drawable/preferences"
+        android:title="Preferences" />
+
+
+</menu>

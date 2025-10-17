@@ -1,0 +1,27 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android" android:height="24dp" android:viewportHeight="1024" android:viewportWidth="1024" android:width="24dp">
+      
+    <path android:fillColor="#F45542" android:pathData="M912,512C912,582.2 893.5,651.2 858.4,712L771.8,662C798.1,616.4 812,564.7 812,512H912Z"/>
+      
+    <path android:fillColor="#DD3242" android:pathData="M858.4,712C823.3,772.8 772.8,823.3 712,858.4L662,771.8C707.6,745.5 745.5,707.6 771.8,662L858.4,712Z"/>
+      
+    <path android:fillColor="#AF2F79" android:pathData="M712,858.4C651.2,893.5 582.2,912 512,912L512,812C564.6,812 616.4,798.1 662,771.8L712,858.4Z"/>
+      
+    <path android:fillColor="#2656AB" android:pathData="M112,512C112,582.2 130.5,651.2 165.6,712L252.2,662C225.9,616.4 212,564.7 212,512H112Z"/>
+      
+    <path android:fillColor="#7943A3" android:pathData="M165.6,712C200.7,772.8 251.2,823.3 312,858.4L362,771.8C316.4,745.5 278.5,707.6 252.2,662L165.6,712Z"/>
+      
+    <path android:fillColor="#A23CA2" android:pathData="M312,858.4C372.8,893.5 441.8,912 512,912L512,812C459.4,812 407.6,798.1 362,771.8L312,858.4Z"/>
+      
+    <path android:fillColor="#019A85" android:pathData="M112,512C112,441.8 130.5,372.8 165.6,312L252.2,362C225.9,407.6 212,459.3 212,512H112Z"/>
+      
+    <path android:fillColor="#01AE5C" android:pathData="M165.6,312C200.7,251.2 251.2,200.7 312,165.6L362,252.2C316.4,278.5 278.5,316.4 252.2,362L165.6,312Z"/>
+      
+    <path android:fillColor="#A1CF49" android:pathData="M312,165.6C372.8,130.5 441.8,112 512,112L512,212C459.4,212 407.6,225.9 362,252.2L312,165.6Z"/>
+      
+    <path android:fillColor="#F97827" android:pathData="M912,512C912,441.8 893.5,372.8 858.4,312L771.8,362C798.1,407.6 812,459.3 812,512H912Z"/>
+      
+    <path android:fillColor="#FCA313" android:pathData="M858.4,312C823.3,251.2 772.8,200.7 712,165.6L662,252.2C707.6,278.5 745.5,316.4 771.8,362L858.4,312Z"/>
+      
+    <path android:fillColor="#FFE503" android:pathData="M712,165.6C651.2,130.5 582.2,112 512,112L512,212C564.6,212 616.4,225.9 662,252.2L712,165.6Z"/>
+    
+</vector>
