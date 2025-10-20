@@ -1,3 +1,4 @@
+
 package com.example.animationapp
 
 import android.graphics.Bitmap
@@ -109,25 +110,41 @@ class MainActivity : AppCompatActivity() {
         btnRedo.setOnClickListener {
             drawingView.redo()
         }
- 
+
         // Color Picker
+        // Inside onCreate -> btnColor.setOnClickListener
         btnColor.setOnClickListener {
-            val dialog = AmbilWarnaDialog(this, initialColor, object : AmbilWarnaDialog.OnAmbilWarnaListener {
+            // Get the current base color to show in the picker, ignoring alpha
+            val pickerColor = initialColor and 0x00FFFFFF
+
+            val dialog = AmbilWarnaDialog(this, pickerColor, object : AmbilWarnaDialog.OnAmbilWarnaListener {
                 override fun onOk(dialog: AmbilWarnaDialog, color: Int) {
-                    // color is the color selected by the user.
-                    initialColor = color
-                    val brush = currentBrush ?: BrushLibrary.brushes.first()
-                    val updatedBrush = brush.copy(color = color)
-                    currentBrush = updatedBrush
-                    drawingView.setEraser(false)
-                    drawingView.setBrush(updatedBrush)
-                    updateBrushPreview(updatedBrush, brushpreview)
+                    // 'color' is the new RGB color from the picker (it's opaque).
+                    // We need to combine it with the current alpha from the DrawingView.
+                    val currentAlpha = drawingView.brushOpacity
+                    val colorWithAlpha = (currentAlpha shl 24) or (color and 0x00FFFFFF)
+
+                    // Now, update everything with the correctly combined color
+                    initialColor = colorWithAlpha
+                    currentBrush = currentBrush?.copy(color = colorWithAlpha)
+
+                    // Explicitly tell DrawingView to update its color
+                    drawingView.setBrushColor(colorWithAlpha)
+                    drawingView.setEraser(false) // Ensure we are in drawing mode
+
+                    // Update the brush preview in the settings panel
+                    currentBrush?.let {
+                        updateBrushPreview(it, brushpreview)
+                    }
                 }
+
                 override fun onCancel(dialog: AmbilWarnaDialog) {
+                    // No action needed
                 }
             })
             dialog.show()
         }
+
 
         btnLayers.setOnClickListener {
         }
@@ -188,7 +205,6 @@ class MainActivity : AppCompatActivity() {
     private fun setupBrushPanel() {
         val container = findViewById<FrameLayout>(R.id.brushContentContainer)
         val tabs = findViewById<TabLayout>(R.id.brushTabs)
-
         val inflater = layoutInflater
         val brushView = inflater.inflate(R.layout.brush_tab_brushes, container, false)
         val settingsView = inflater.inflate(R.layout.brush_tab_settings, container, false)
@@ -247,118 +263,55 @@ class MainActivity : AppCompatActivity() {
     private fun setupBrushSettings(view: View) {
         val sizeSeekBar = view.findViewById<SeekBar>(R.id.sizeSeekBar)
         val opacitySeekBar = view.findViewById<SeekBar>(R.id.opacitySeekBar)
-        val seekbarSizeHeavy = view.findViewById<SeekBar>(R.id.sizewithheavypressure)
-        val seekbarSizeLight = view.findViewById<SeekBar>(R.id.sizewithlightpressure)
-        val seekbarOpacityHeavy = view.findViewById<SeekBar>(R.id.opacitywithheavypressure)
-        val seekbarOpacityLight = view.findViewById<SeekBar>(R.id.opacitywithlightpressure)
 
-        if(sizeSeekBar != null) {
-            sizeSeekBar?.max = 100
-            sizeSeekBar?.progress = (currentBrush?.strokeWidth?.toInt() ?: 8)
-            sizeSeekBar?.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-                override fun onProgressChanged(
-                    seekBar: SeekBar?,
-                    progress: Int,
-                    fromUser: Boolean
-                ) {
-                    val brush = currentBrush ?: BrushLibrary.brushes.first()
-                    val newBrush = brush.copy(
-                        color = initialColor, // Use the most up-to-date color
-                        strokeWidth = progress.coerceAtLeast(1).toFloat()
-                    )
-                    currentBrush = newBrush
-                    drawingView.setBrush(newBrush)
-                    updateBrushPreview(newBrush, brushpreview)
+        if (sizeSeekBar != null) {
+            sizeSeekBar.max = 100 // Max size
+            // Use drawingView.brushSize to set the progress
+            sizeSeekBar.progress = drawingView.brushSize.toInt()
+
+            sizeSeekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+                override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                    if (!fromUser) return
+                    // Update the brushSize directly in DrawingView
+                    drawingView.brushSize = progress.coerceAtLeast(1).toFloat()
+
+                    // Also update the preview
+                    currentBrush = currentBrush?.copy(strokeWidth = drawingView.brushSize)
+                    currentBrush?.let { updateBrushPreview(it, brushpreview) }
                 }
-
                 override fun onStartTrackingTouch(seekBar: SeekBar?) {}
                 override fun onStopTrackingTouch(seekBar: SeekBar?) {}
             })
-        }
-        else
+        } else {
             Toast.makeText(this, "seekbarSize not found", Toast.LENGTH_SHORT).show()
+        }
 
         if (opacitySeekBar != null) {
-            opacitySeekBar?.max = 255
-            val startingAlpha = (currentBrush?.color?.ushr(24) ?: 255)
-            opacitySeekBar?.progress = startingAlpha
+            opacitySeekBar.max = 255
+            // Use drawingView.brushOpacity to set the progress
+            opacitySeekBar.progress = drawingView.brushOpacity
+
             opacitySeekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-                override fun onProgressChanged(
-                    seekBar: SeekBar?,
-                    progress: Int,
-                    fromUser: Boolean
-                ) {
-                    val brush = currentBrush ?: BrushLibrary.brushes.first()
+                override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                    if (!fromUser) return
+                    // Update the brushOpacity directly in DrawingView
+                    drawingView.brushOpacity = progress
+
+                    // Update the preview by creating a new color with the new alpha
                     val baseColor = (initialColor and 0x00FFFFFF)
                     val colorWithAlpha = (progress shl 24) or baseColor
-                    val newBrush = brush.copy(color = colorWithAlpha)
-                    currentBrush = newBrush
                     initialColor = colorWithAlpha
-                    drawingView.setBrush(newBrush)
-                    updateBrushPreview(newBrush, brushpreview)
-                }
 
+                    currentBrush = currentBrush?.copy(color = colorWithAlpha)
+                    drawingView.setBrushColor(colorWithAlpha)
+                    currentBrush?.let { updateBrushPreview(it, brushpreview) }
+                }
                 override fun onStartTrackingTouch(seekBar: SeekBar?) {}
                 override fun onStopTrackingTouch(seekBar: SeekBar?) {}
             })
-        }
-        else
+        } else {
             Toast.makeText(this, "seekbarOpacity not found", Toast.LENGTH_SHORT).show()
-
-
-        if (seekbarSizeHeavy != null) {
-            seekbarSizeHeavy.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-                override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
-                    drawingView.maxWidth = progress.toFloat()  // e.g., 0-100
-                }
-
-                override fun onStartTrackingTouch(seekBar: SeekBar) {}
-                override fun onStopTrackingTouch(seekBar: SeekBar) {}
-            })
         }
-        else
-            Toast.makeText(this, "seekbarSizeHeavy not found", Toast.LENGTH_SHORT).show()
-
-        if (seekbarSizeLight != null) {
-            seekbarSizeLight.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-                override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
-                    drawingView.minWidth = progress.toFloat()  // e.g., 0-100
-                }
-
-                override fun onStartTrackingTouch(seekBar: SeekBar) {}
-                override fun onStopTrackingTouch(seekBar: SeekBar) {}
-            })
-        }
-        else
-            Toast.makeText(this, "seekbarSizeLight not found", Toast.LENGTH_SHORT).show()
-
-        if (seekbarOpacityHeavy != null) {
-            seekbarOpacityHeavy.setOnSeekBarChangeListener(object :
-                SeekBar.OnSeekBarChangeListener {
-                override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
-                    drawingView.maxAlpha = progress  // e.g., 0-255
-                }
-
-                override fun onStartTrackingTouch(seekBar: SeekBar) {}
-                override fun onStopTrackingTouch(seekBar: SeekBar) {}
-            })
-        }
-        else
-            Toast.makeText(this, "seekbarOpacityHeavy not found", Toast.LENGTH_SHORT).show()
-
-        if (seekbarOpacityLight != null) {
-            seekbarOpacityLight.setOnSeekBarChangeListener(object :
-                SeekBar.OnSeekBarChangeListener {
-                override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
-                    drawingView.minAlpha = progress // e.g., 0-255
-                }
-
-                override fun onStartTrackingTouch(seekBar: SeekBar) {}
-                override fun onStopTrackingTouch(seekBar: SeekBar) {}
-            })
-        }
-        else
-            Toast.makeText(this, "seekbarOpacityLight not found", Toast.LENGTH_SHORT).show()
     }
 
     private fun updateBrushPreview(brush: BrushType, imageView: ImageView?) {
@@ -391,4 +344,3 @@ class MainActivity : AppCompatActivity() {
     }
 
 }
-
