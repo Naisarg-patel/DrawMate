@@ -32,12 +32,17 @@ class DrawingView @JvmOverloads constructor(
         strokeCap = Paint.Cap.ROUND
     }
 
+    // --- CHANGE 1: Add a cache for compiled texture shaders for performance ---
+    private val textureCache = mutableMapOf<Int, BitmapShader>()
+
+    // --- CHANGE 2: Add texture info to the Stroke data class ---
     data class Stroke(
         val path: Path,
         val color: Int,
         val strokeWidth: Float,
         val alpha: Int,
-        val isEraser: Boolean
+        val isEraser: Boolean,
+        val textureResId: Int? = null // To remember if a stroke was textured
     )
 
     private val strokeList = ArrayList<Stroke>()
@@ -46,18 +51,17 @@ class DrawingView @JvmOverloads constructor(
     private var currentBrush: BrushType = BrushLibrary.brushes.first()
     private var isEraser = false
 
-    // Manual control
     var brushSize: Float = 20f
         set(value) {
             field = value.coerceIn(1f, 200f)
-            paintBrush.strokeWidth = field
+            updatePaint() // updatePaint handles applying the size
             invalidate()
         }
 
     var brushOpacity: Int = 255
         set(value) {
             field = value.coerceIn(0, 255)
-            paintBrush.alpha = field
+            updatePaint() // updatePaint handles applying the opacity
             invalidate()
         }
 
@@ -66,13 +70,41 @@ class DrawingView @JvmOverloads constructor(
         updatePaint()
     }
 
+    // --- CHANGE 3: Add a helper function to create and cache shaders ---
+    private fun getTexture(textureResId: Int): BitmapShader {
+        if (textureCache.containsKey(textureResId)) {
+            return textureCache[textureResId]!!
+        }
+        val textureBitmap = BitmapFactory.decodeResource(resources, textureResId)
+        val shader = BitmapShader(textureBitmap, Shader.TileMode.REPEAT, Shader.TileMode.REPEAT)
+        textureCache[textureResId] = shader
+        return shader
+    }
+
+    // --- CHANGE 4: Overhaul the updatePaint() method to support textures ---
     private fun updatePaint() {
-        // Always keep paint in sync with the latest brush settings
         paintBrush.apply {
-            color = currentBrush.color
+            // Reset shader and color filter from previous state
+            shader = null
+            colorFilter = null
+
             strokeWidth = brushSize
-            alpha = brushOpacity
-            xfermode = if (isEraser) PorterDuffXfermode(PorterDuff.Mode.CLEAR) else null
+            xfermode = if (isEraser) {
+                // Eraser mode
+                PorterDuffXfermode(PorterDuff.Mode.CLEAR)
+            } else if (currentBrush.textureRes != null) {
+                // Textured brush mode
+                shader = getTexture(currentBrush.textureRes!!)
+                // Use a color filter to tint the texture with the brush color
+                colorFilter = PorterDuffColorFilter(currentBrush.color, PorterDuff.Mode.SRC_IN)
+                alpha = brushOpacity // Still respect the overall opacity
+                null // Clear xfermode if it was set
+            } else {
+                // Solid color brush mode
+                color = currentBrush.color
+                alpha = brushOpacity
+                null // Clear xfermode
+            }
         }
     }
 
@@ -103,12 +135,14 @@ class DrawingView @JvmOverloads constructor(
 
             MotionEvent.ACTION_UP -> {
                 currentPath?.let { path ->
+                    // --- CHANGE 5: Save the texture info when a stroke is finished ---
                     val stroke = Stroke(
                         Path(path),
-                        paintBrush.color,
-                        paintBrush.strokeWidth,
-                        paintBrush.alpha,
-                        isEraser
+                        currentBrush.color,
+                        brushSize,
+                        brushOpacity,
+                        isEraser,
+                        if (isEraser) null else currentBrush.textureRes
                     )
                     strokeList.add(stroke)
                 }
@@ -119,20 +153,45 @@ class DrawingView @JvmOverloads constructor(
         return true
     }
 
+    // --- CHANGE 6: Overhaul onDraw() to render each stroke correctly ---
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
 
+        // 1. Redraw all the saved strokes from the list
         for (stroke in strokeList) {
-            paintBrush.color = stroke.color
-            paintBrush.strokeWidth = stroke.strokeWidth
-            paintBrush.alpha = stroke.alpha
-            paintBrush.xfermode = if (stroke.isEraser)
-                PorterDuffXfermode(PorterDuff.Mode.CLEAR)
-            else null
+            paintBrush.apply {
+                // Reset everything first for this specific stroke
+                shader = null
+                colorFilter = null
+
+                // A. Configure for an eraser stroke
+                if (stroke.isEraser) {
+                    xfermode = PorterDuffXfermode(PorterDuff.Mode.CLEAR)
+                }
+                // B. Configure for a textured stroke
+                else if (stroke.textureResId != null) {
+                    xfermode = null
+                    shader = getTexture(stroke.textureResId)
+                    colorFilter = PorterDuffColorFilter(stroke.color, PorterDuff.Mode.SRC_IN)
+                    alpha = stroke.alpha
+                }
+                // C. Configure for a solid stroke
+                else {
+                    xfermode = null
+                    color = stroke.color
+                    alpha = stroke.alpha
+                }
+
+                // Apply common properties for all stroke types
+                strokeWidth = stroke.strokeWidth
+            }
+            // Draw the path with the fully configured paint object
             canvas.drawPath(stroke.path, paintBrush)
         }
 
+        // 2. Draw the live, current path the user is drawing now
         currentPath?.let {
+            // updatePaint() correctly configures the brush for the current settings
             updatePaint()
             canvas.drawPath(it, paintBrush)
         }
@@ -172,4 +231,5 @@ class DrawingView @JvmOverloads constructor(
         updatePaint()
         invalidate()
     }
+
 }

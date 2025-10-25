@@ -2,6 +2,7 @@ package com.example.animationapp.models
 
 import android.graphics.Paint
 import android.os.Parcelable
+import androidx.annotation.DrawableRes
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
@@ -12,7 +13,8 @@ data class BrushType(
     val strokeWidth: Float,
     val strokeCap: Paint.Cap,
     val strokeJoin: Paint.Join = Paint.Join.ROUND,
-    val style: Paint.Style = Paint.Style.STROKE
+    val style: Paint.Style = Paint.Style.STROKE,
+    val textureRes: Int? = null
 ) : Parcelable {
 
     /** Create a modified copy with a new color */

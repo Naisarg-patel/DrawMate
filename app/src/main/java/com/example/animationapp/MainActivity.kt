@@ -2,10 +2,13 @@
 package com.example.animationapp
 
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.BitmapShader
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Path
+import android.graphics.Shader
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
@@ -25,6 +28,7 @@ import com.google.android.material.tabs.TabLayout
 import android.widget.GridLayout
 import com.example.animationapp.models.BrushType
 import yuku.ambilwarna.AmbilWarnaDialog
+import android.util.Log
 
 class MainActivity : AppCompatActivity() {
 
@@ -255,6 +259,7 @@ class MainActivity : AppCompatActivity() {
                     updateBrushPreview(selectedbrush, brushpreview)
                     drawingView.setEraser(false)
                     drawingView.setBrush(selectedbrush)
+                    Log.d("MainActivity", "Selected brush: ${selectedbrush.name}, textureRes: ${selectedbrush.textureRes}")
                 }
             }
             grid.addView(image)
@@ -327,6 +332,12 @@ class MainActivity : AppCompatActivity() {
             strokeCap = brush.strokeCap
             strokeJoin = brush.strokeJoin
             isAntiAlias = true
+
+            if (brush.textureRes != null) {
+                val bitmap = BitmapFactory.decodeResource(resources, brush.textureRes)
+                val shader = BitmapShader(bitmap, Shader.TileMode.REPEAT, Shader.TileMode.REPEAT)
+                this.shader = shader
+            }
         }
 
         val path = Path().apply {
