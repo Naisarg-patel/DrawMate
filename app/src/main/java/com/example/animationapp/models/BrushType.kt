@@ -14,7 +14,8 @@ data class BrushType(
     val strokeCap: Paint.Cap,
     val strokeJoin: Paint.Join = Paint.Join.ROUND,
     val style: Paint.Style = Paint.Style.STROKE,
-    val textureRes: Int? = null
+    val textureRes: Int? = null,
+    val category: String = "basic"
 ) : Parcelable {
 
     /** Create a modified copy with a new color */

@@ -216,6 +216,8 @@ class MainActivity : AppCompatActivity() {
         brushname = findViewById(R.id.selectedBrushName)
         brushicon = findViewById(R.id.selectedBrushIcon)
         brushpreview = findViewById(R.id.brushPreview)
+        brushname?.text = currentBrush?.name
+        brushicon?.setImageResource(currentBrush?.iconRes ?: 0 )
 
         container.removeAllViews()
         container.addView(brushView)
@@ -241,29 +243,48 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupBrushGrid(view: View) {
-        val grid = view.findViewById<GridLayout>(R.id.brushgrid)
+        val basicgrid = view.findViewById<GridLayout>(R.id.basicbrushgrid)
+        val halftonegrid = view.findViewById<GridLayout>(R.id.halftonebrushgrid)
+        val inkgrid = view.findViewById<GridLayout>(R.id.inkbrushgrid)
 
-        grid.removeAllViews()
-        for (brush in BrushLibrary.brushes) {
-            val image = ImageView(this).apply {
-                setImageResource(brush.iconRes)
-                layoutParams = ViewGroup.LayoutParams(120, 120)
-                setPadding(16, 16, 16, 16)
-                isClickable = true
-                isFocusable = true
-                setOnClickListener {
-                    val selectedbrush = brush.copy(color = initialColor)
-                    currentBrush = selectedbrush
-                    brushname?.text = selectedbrush.name
-                    brushicon?.setImageResource(selectedbrush.iconRes)
-                    updateBrushPreview(selectedbrush, brushpreview)
-                    drawingView.setEraser(false)
-                    drawingView.setBrush(selectedbrush)
-                    Log.d("MainActivity", "Selected brush: ${selectedbrush.name}, textureRes: ${selectedbrush.textureRes}")
+        val displayMetrics = resources.displayMetrics
+        val screenWidth = displayMetrics.widthPixels
+        val spacing = (8 * displayMetrics.density).toInt() * 2
+        val columnCount = 5
+        val itemSize = (screenWidth / columnCount) - spacing
+
+        val basicBrushes = BrushLibrary.brushes.filter { it.category == "basic" }
+        val halftoneBrushes = BrushLibrary.brushes.filter { it.category == "halftone" }
+        val inkBrushes = BrushLibrary.brushes.filter { it.category == "ink" }
+
+
+        basicgrid.removeAllViews()
+
+        fun populateGrid(grid: GridLayout, brushes: List<BrushType>) {
+            for (brush in brushes) {
+                val image = ImageView(this).apply {
+                    setImageResource(brush.iconRes)
+                    layoutParams = ViewGroup.LayoutParams(itemSize, itemSize)
+                    setPadding(12, 12, 12, 12)
+                    adjustViewBounds = true
+                    isClickable = true
+                    isFocusable = true
+                    setOnClickListener {
+                        val selectedbrush = brush.copy(color = initialColor)
+                        currentBrush = selectedbrush
+                        brushname?.text = selectedbrush.name
+                        brushicon?.setImageResource(selectedbrush.iconRes)
+                        updateBrushPreview(selectedbrush, brushpreview)
+                        drawingView.setEraser(false)
+                        drawingView.setBrush(selectedbrush)
+                    }
                 }
+                grid.addView(image)
             }
-            grid.addView(image)
         }
+        populateGrid(basicgrid, basicBrushes)
+        populateGrid(halftonegrid, halftoneBrushes)
+        populateGrid(inkgrid, inkBrushes)
     }
     private fun setupBrushSettings(view: View) {
         val sizeSeekBar = view.findViewById<SeekBar>(R.id.sizeSeekBar)
@@ -337,6 +358,7 @@ class MainActivity : AppCompatActivity() {
                 val bitmap = BitmapFactory.decodeResource(resources, brush.textureRes)
                 val shader = BitmapShader(bitmap, Shader.TileMode.REPEAT, Shader.TileMode.REPEAT)
                 this.shader = shader
+                this.colorFilter = android.graphics.PorterDuffColorFilter(brush.color, android.graphics.PorterDuff.Mode.SRC_IN)
             }
         }
 
