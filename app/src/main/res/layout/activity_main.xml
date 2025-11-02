@@ -104,7 +104,7 @@
         android:layout_weight="1">
 
         <!-- Drawing Canvas -->
-        <com.example.animationapp.DrawingView
+        <com.example.DrawMate.DrawingView
             android:id="@+id/drawingView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -120,6 +120,9 @@
             android:visibility="gone"
             android:translationY="-600dp"
             android:elevation="20dp" />
+
+
+
     </FrameLayout>
 
 

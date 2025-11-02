@@ -7,11 +7,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.animationapp"
+    namespace = "com.example.DrawMate"
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.example.animationapp"
+        applicationId = "com.DrawMatw"
         minSdk = 24
         targetSdk = 36
         versionCode = 1

@@ -1,4 +1,4 @@
-package com.example.animationapp
+package com.example.DrawMate
 
 import android.content.Context
 import android.graphics.*
@@ -6,7 +6,7 @@ import android.util.AttributeSet
 import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.View
-import com.example.animationapp.models.BrushType
+import com.example.DrawMate.models.BrushType
 
 class DrawingView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
@@ -32,10 +32,8 @@ class DrawingView @JvmOverloads constructor(
         strokeCap = Paint.Cap.ROUND
     }
 
-    // --- CHANGE 1: Add a cache for compiled texture shaders for performance ---
     private val textureCache = mutableMapOf<Int, BitmapShader>()
 
-    // --- CHANGE 2: Add texture info to the Stroke data class ---
     data class Stroke(
         val path: Path,
         val color: Int,
@@ -50,6 +48,19 @@ class DrawingView @JvmOverloads constructor(
     private var currentPath: Path? = null
     private var currentBrush: BrushType = BrushLibrary.brushes.first()
     private var isEraser = false
+    enum class Tooltype { BRUSH,ERASER,SHAPE }
+    enum class shapetype { CIRCLE, RECTANGLE, LINE }
+    private var currentshape: Path? = null
+    private var currentshapetype = shapetype.RECTANGLE
+    private var currentTool = Tooltype.BRUSH
+    private var shapeStartX = 0f
+    private var shapeStartY = 0f
+    private var shapePath: Path? = null
+    private var bufferBitmap: Bitmap? = null
+    private var bufferCanvas: Canvas? = null
+    private var tempShapeBitmap: Bitmap? = null
+    private var tempShapeCanvas: Canvas? = null
+
 
     var brushSize: Float = 20f
         set(value) {
@@ -58,9 +69,10 @@ class DrawingView @JvmOverloads constructor(
             invalidate()
         }
 
-    var brushOpacity: Int = 255
+    var brushOpacity: Int
+        get() = currentBrush.opacity
         set(value) {
-            field = value.coerceIn(0, 255)
+            currentBrush = currentBrush.copy(opacity = value)
             updatePaint() // updatePaint handles applying the opacity
             invalidate()
         }
@@ -70,7 +82,6 @@ class DrawingView @JvmOverloads constructor(
         updatePaint()
     }
 
-    // --- CHANGE 3: Add a helper function to create and cache shaders ---
     private fun getTexture(textureResId: Int): BitmapShader {
         if (textureCache.containsKey(textureResId)) {
             return textureCache[textureResId]!!
@@ -81,7 +92,6 @@ class DrawingView @JvmOverloads constructor(
         return shader
     }
 
-    // --- CHANGE 4: Overhaul the updatePaint() method to support textures ---
     private fun updatePaint() {
         paintBrush.apply {
             // Reset shader and color filter from previous state
@@ -102,13 +112,27 @@ class DrawingView @JvmOverloads constructor(
             } else {
                 // Solid color brush mode
                 color = currentBrush.color
-                alpha = brushOpacity
+                alpha = currentBrush.opacity
                 null // Clear xfermode
             }
         }
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
+        gestureDetector.onTouchEvent(event)
+        val x = event.x
+        val y = event.y
+
+        when (currentTool) {
+            Tooltype.BRUSH -> handleBrushTouch(event, x, y)
+            Tooltype.SHAPE -> handleShapeTouch(event, x, y)
+            Tooltype.ERASER -> handleBrushTouch(event, x, y)
+        }
+
+        return true
+    }
+
+    private fun handleBrushTouch(event: MotionEvent, x: Float, y: Float): Boolean {
         gestureDetector.onTouchEvent(event)
         val x = event.x
         val y = event.y
@@ -135,7 +159,6 @@ class DrawingView @JvmOverloads constructor(
 
             MotionEvent.ACTION_UP -> {
                 currentPath?.let { path ->
-                    // --- CHANGE 5: Save the texture info when a stroke is finished ---
                     val stroke = Stroke(
                         Path(path),
                         currentBrush.color,
@@ -153,45 +176,93 @@ class DrawingView @JvmOverloads constructor(
         return true
     }
 
-    // --- CHANGE 6: Overhaul onDraw() to render each stroke correctly ---
+    override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
+        super.onSizeChanged(w, h, oldw, oldh)
+        if (w > 0 && h > 0) {
+            bufferBitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888)
+            bufferCanvas = Canvas(bufferBitmap!!)
+            tempShapeBitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888)
+            tempShapeCanvas = Canvas(tempShapeBitmap!!)
+        }
+    }
+    private fun handleShapeTouch(event: MotionEvent, x: Float, y: Float) {
+        when (event.action) {
+            MotionEvent.ACTION_DOWN -> {
+                shapeStartX = x
+                shapeStartY = y
+                currentshape = Path()
+            }
+            MotionEvent.ACTION_MOVE -> {
+                tempShapeBitmap?.eraseColor(Color.TRANSPARENT)
+                currentshape?.reset()
+                when(currentshapetype) {
+                    shapetype.CIRCLE -> {
+                        val radius = kotlin.math.hypot(x - shapeStartX, y - shapeStartY)
+                        currentshape?.addCircle(shapeStartX, shapeStartY, radius, Path.Direction.CW)
+                    }
+                    shapetype.RECTANGLE -> {
+                        currentshape?.addRect(shapeStartX, shapeStartY, x, y, Path.Direction.CW)
+                    }
+                    shapetype.LINE -> {
+                        currentshape?.moveTo(shapeStartX, shapeStartY)
+                        currentshape?.lineTo(x, y)
+                    }
+                }
+                tempShapeCanvas?.drawPath(currentshape!!, paintBrush)
+                invalidate()
+            }
+            MotionEvent.ACTION_UP -> {
+                currentshape?.let { path ->
+                    bufferCanvas?.drawPath(path, paintBrush)
+                }
+                tempShapeBitmap?.eraseColor(Color.TRANSPARENT)
+                currentshape = null
+                invalidate()
+            }
+        }
+    }
+
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
 
-        // 1. Redraw all the saved strokes from the list
         for (stroke in strokeList) {
             paintBrush.apply {
-                // Reset everything first for this specific stroke
                 shader = null
                 colorFilter = null
 
-                // A. Configure for an eraser stroke
                 if (stroke.isEraser) {
                     xfermode = PorterDuffXfermode(PorterDuff.Mode.CLEAR)
                 }
-                // B. Configure for a textured stroke
                 else if (stroke.textureResId != null) {
                     xfermode = null
                     shader = getTexture(stroke.textureResId)
                     colorFilter = PorterDuffColorFilter(stroke.color, PorterDuff.Mode.SRC_IN)
                     alpha = stroke.alpha
                 }
-                // C. Configure for a solid stroke
                 else {
                     xfermode = null
                     color = stroke.color
                     alpha = stroke.alpha
                 }
 
-                // Apply common properties for all stroke types
                 strokeWidth = stroke.strokeWidth
             }
-            // Draw the path with the fully configured paint object
             canvas.drawPath(stroke.path, paintBrush)
         }
+        bufferBitmap?.let {
+            canvas.drawBitmap(it, 0f, 0f, null)
+        }
 
-        // 2. Draw the live, current path the user is drawing now
         currentPath?.let {
-            // updatePaint() correctly configures the brush for the current settings
+            updatePaint()
+            canvas.drawPath(it, paintBrush)
+        }
+
+        tempShapeBitmap?.let {
+            canvas.drawBitmap(it, 0f, 0f, null)
+        }
+
+        shapePath?.let {
             updatePaint()
             canvas.drawPath(it, paintBrush)
         }
@@ -211,11 +282,22 @@ class DrawingView @JvmOverloads constructor(
         }
     }
 
+    fun setTool(tool: Tooltype) {
+        currentTool = tool
+        isEraser = (tool == Tooltype.ERASER)
+        updatePaint()
+        invalidate()
+    }
+
+    fun setShape(type: shapetype) {
+        currentshapetype = type
+    }
+
     fun setBrush(brush: BrushType) {
         currentBrush = brush
         isEraser = false
         brushSize = brush.strokeWidth
-        brushOpacity = Color.alpha(brush.color)
+        brushOpacity = brush.opacity
         updatePaint()
         invalidate()
     }
@@ -228,6 +310,7 @@ class DrawingView @JvmOverloads constructor(
 
     fun setBrushColor(color: Int) {
         currentBrush = currentBrush.copy(color = color)
+        isEraser = false
         updatePaint()
         invalidate()
     }

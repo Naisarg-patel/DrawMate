@@ -1,17 +1,17 @@
-package com.example.animationapp
+package com.example.DrawMate
 
 import android.graphics.Color
 import android.graphics.Paint
-import com.example.animationapp.models.BrushType
+import com.example.DrawMate.models.BrushType
 
 object BrushLibrary {
     val brushes = listOf(
-        BrushType("Pencil", R.drawable.brush, Color.BLACK, 4f, Paint.Cap.ROUND, category = "basic"),
-        BrushType("Marker", R.drawable.color_wheel, Color.BLACK, 12f, Paint.Cap.BUTT, category = "basic"),
-        BrushType("Round Brush", R.drawable.brush, Color.BLACK, 10f, Paint.Cap.ROUND, category = "basic"),
-        BrushType("Flat Brush", R.drawable.brush, Color.BLACK, 16f, Paint.Cap.SQUARE, category = "basic"),
-        BrushType("Soft Airbrush", R.drawable.brush, Color.BLACK, 25f, Paint.Cap.ROUND, category = "basic"),
-        BrushType("Hard Airbrush", R.drawable.brush, Color.BLACK, 40f, Paint.Cap.ROUND, category = "basic"),
+        BrushType("Pencil", R.drawable.brush, Color.BLACK, 8f, Paint.Cap.ROUND, category = "basic", opacity = 225),
+        BrushType("Calligraphy", R.drawable.color_wheel, Color.BLACK, 12f, Paint.Cap.SQUARE,Paint.Join.BEVEL, category = "basic", opacity = 225),
+        BrushType("Watercolor", R.drawable.brush, Color.BLACK, 20f, Paint.Cap.ROUND, style = Paint.Style.FILL, category = "basic", opacity = 170),
+        BrushType("Marker", R.drawable.brush, Color.BLACK, 16f, Paint.Cap.BUTT, category = "basic", opacity = 150),
+        BrushType("soft brush", R.drawable.brush, Color.BLACK, 15f, Paint.Cap.ROUND, category = "basic", opacity = 100),
+        BrushType("Hard brush", R.drawable.brush, Color.BLACK, 40f, Paint.Cap.ROUND, category = "basic", opacity = 255),
         BrushType(
             "half tone star",
             R.drawable.halftonestart,
@@ -88,15 +88,6 @@ object BrushLibrary {
         BrushType("half tone grid 1",R.drawable.grid, Color.BLACK, 100f, Paint.Cap.ROUND, textureRes = R.drawable.grid, category = "halftone"),
         BrushType("half tone grid 2",R.drawable.grid1, Color.BLACK, 100f, Paint.Cap.ROUND, textureRes = R.drawable.grid1, category = "halftone"),
         BrushType("half tone grid 3",R.drawable.grid3, Color.BLACK, 100f, Paint.Cap.ROUND, textureRes = R.drawable.grid3, category = "halftone"),
-        BrushType("Ink 1", R.drawable.ink1, Color.BLACK, 100f, Paint.Cap.ROUND, textureRes = R.drawable.ink1, category = "ink"),
-        BrushType("Ink 2", R.drawable.ink2, Color.BLACK, 100f, Paint.Cap.ROUND, textureRes = R.drawable.ink2, category = "ink"),
-        BrushType("Ink 3", R.drawable.ink3, Color.BLACK, 100f, Paint.Cap.ROUND, textureRes = R.drawable.ink3, category = "ink"),
-        BrushType("Ink 4", R.drawable.ink4, Color.BLACK, 100f, Paint.Cap.ROUND, textureRes = R.drawable.ink4, category = "ink"),
-        BrushType("Ink 5", R.drawable.ink5, Color.BLACK, 100f, Paint.Cap.ROUND, textureRes = R.drawable.ink5, category = "ink"),
-        BrushType("Ink 6", R.drawable.ink6, Color.BLACK, 100f, Paint.Cap.ROUND, textureRes = R.drawable.ink6, category = "ink"),
-        BrushType("Ink 7", R.drawable.ink7, Color.BLACK, 100f, Paint.Cap.ROUND, textureRes = R.drawable.ink7, category = "ink"),
-        BrushType("Ink 8", R.drawable.ink8, Color.BLACK, 100f, Paint.Cap.ROUND, textureRes = R.drawable.ink8, category = "ink"),
-        BrushType("Ink 9", R.drawable.ink9, Color.BLACK, 100f, Paint.Cap.ROUND, textureRes = R.drawable.ink9, category = "ink"),
 
-    )
+        )
 }

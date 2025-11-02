@@ -1,4 +1,4 @@
-package com.example.animationapp
+package com.example.DrawMate
 
 import org.junit.Test
 

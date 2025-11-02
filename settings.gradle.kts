@@ -19,6 +19,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "animation app"
+rootProject.name = "DrawMate"
 include(":app")
  

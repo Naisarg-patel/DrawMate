@@ -1,4 +1,4 @@
-package com.example.animationapp
+package com.example.DrawMate
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4

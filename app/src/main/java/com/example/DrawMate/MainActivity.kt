@@ -1,5 +1,5 @@
 
-package com.example.animationapp
+package com.example.DrawMate
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -26,9 +26,10 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.google.android.material.tabs.TabLayout
 import android.widget.GridLayout
-import com.example.animationapp.models.BrushType
+import com.example.DrawMate.models.BrushType
 import yuku.ambilwarna.AmbilWarnaDialog
-import android.util.Log
+import android.view.LayoutInflater
+import android.widget.PopupWindow
 
 class MainActivity : AppCompatActivity() {
 
@@ -40,6 +41,13 @@ class MainActivity : AppCompatActivity() {
     private var brushname: TextView? = null
     private var brushicon: ImageView? = null
     private var brushpreview: ImageView? = null
+    // ... inside MainActivity class, before onCreate
+    private var sizeSeekBar: SeekBar? = null
+    private var opacitySeekBar: SeekBar? = null
+    private var toolpopwindow: PopupWindow? = null
+
+// ... other properties
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -74,12 +82,30 @@ class MainActivity : AppCompatActivity() {
 
             popup.setOnMenuItemClickListener { item: MenuItem ->
                 when (item.itemId) {
-                    R.id.action_new_sketch -> { showToast("New Sketch clicked"); true }
-                    R.id.action_gallery -> { showToast("Gallery clicked"); true }
-                    R.id.action_save -> { showToast("Save clicked"); true }
-                    R.id.action_import -> { showToast("Import from Files clicked"); true }
-                    R.id.action_export -> { showToast("Export clicked"); true }
-                    R.id.action_preferences -> { showToast("Preferences clicked"); true }
+                    R.id.action_new_sketch -> {
+                        showToast("New Sketch clicked"); true
+                    }
+
+                    R.id.action_gallery -> {
+                        showToast("Gallery clicked"); true
+                    }
+
+                    R.id.action_save -> {
+                        showToast("Save clicked"); true
+                    }
+
+                    R.id.action_import -> {
+                        showToast("Import from Files clicked"); true
+                    }
+
+                    R.id.action_export -> {
+                        showToast("Export clicked"); true
+                    }
+
+                    R.id.action_preferences -> {
+                        showToast("Preferences clicked"); true
+                    }
+
                     else -> false
                 }
             }
@@ -89,6 +115,7 @@ class MainActivity : AppCompatActivity() {
 
         btnEraser.setOnClickListener {
             drawingView.setEraser(true)
+            drawingView.setTool(DrawingView.Tooltype.ERASER)
         }
 
         setupBrushPanel()
@@ -99,6 +126,7 @@ class MainActivity : AppCompatActivity() {
             currentBrush?.let { brush ->
                 drawingView.setBrush(brush)
             }
+            drawingView.setTool(DrawingView.Tooltype.BRUSH)
         }
 
         drawingView.onTouchStartListener = {
@@ -121,31 +149,32 @@ class MainActivity : AppCompatActivity() {
             // Get the current base color to show in the picker, ignoring alpha
             val pickerColor = initialColor and 0x00FFFFFF
 
-            val dialog = AmbilWarnaDialog(this, pickerColor, object : AmbilWarnaDialog.OnAmbilWarnaListener {
-                override fun onOk(dialog: AmbilWarnaDialog, color: Int) {
-                    // 'color' is the new RGB color from the picker (it's opaque).
-                    // We need to combine it with the current alpha from the DrawingView.
-                    val currentAlpha = drawingView.brushOpacity
-                    val colorWithAlpha = (currentAlpha shl 24) or (color and 0x00FFFFFF)
+            val dialog =
+                AmbilWarnaDialog(this, pickerColor, object : AmbilWarnaDialog.OnAmbilWarnaListener {
+                    override fun onOk(dialog: AmbilWarnaDialog, color: Int) {
+                        // 'color' is the new RGB color from the picker (it's opaque).
+                        // We need to combine it with the current alpha from the DrawingView.
+                        val currentAlpha = drawingView.brushOpacity
+                        val colorWithAlpha = (currentAlpha shl 24) or (color and 0x00FFFFFF)
 
-                    // Now, update everything with the correctly combined color
-                    initialColor = colorWithAlpha
-                    currentBrush = currentBrush?.copy(color = colorWithAlpha)
+                        // Now, update everything with the correctly combined color
+                        initialColor = colorWithAlpha
+                        currentBrush = currentBrush?.copy(color = colorWithAlpha)
 
-                    // Explicitly tell DrawingView to update its color
-                    drawingView.setBrushColor(colorWithAlpha)
-                    drawingView.setEraser(false) // Ensure we are in drawing mode
+                        // Explicitly tell DrawingView to update its color
+                        drawingView.setBrushColor(colorWithAlpha)
+                        drawingView.setEraser(false) // Ensure we are in drawing mode
 
-                    // Update the brush preview in the settings panel
-                    currentBrush?.let {
-                        updateBrushPreview(it, brushpreview)
+                        // Update the brush preview in the settings panel
+                        currentBrush?.let {
+                            updateBrushPreview(it, brushpreview)
+                        }
                     }
-                }
 
-                override fun onCancel(dialog: AmbilWarnaDialog) {
-                    // No action needed
-                }
-            })
+                    override fun onCancel(dialog: AmbilWarnaDialog) {
+                        // No action needed
+                    }
+                })
             dialog.show()
         }
 
@@ -153,8 +182,46 @@ class MainActivity : AppCompatActivity() {
         btnLayers.setOnClickListener {
         }
 
+
+        btnTools.setOnClickListener {
+            if (toolpopwindow?.isShowing == true) {
+                toolpopwindow?.dismiss()
+            } else {
+                showtoolpopup(it)
+            }
+        }
     }
 
+    private fun showtoolpopup(anchorView: View){
+        val inflater = getSystemService(LAYOUT_INFLATER_SERVICE) as LayoutInflater
+        val popupView = inflater.inflate(R.layout.tool, null)
+
+        popupView.measure(
+            View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
+            View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+        )
+
+        toolpopwindow = PopupWindow(
+            popupView,
+            ViewGroup.LayoutParams.WRAP_CONTENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT,
+            true
+        )
+        toolpopwindow?.isFocusable = true
+        toolpopwindow?.elevation = 20f
+
+        // Set any click listeners for buttons INSIDE your tool.xml layout here
+        // Example:
+        // val someButtonInPopup = popupView.findViewById<Button>(R.id.some_button_id)
+        // someButtonInPopup.setOnClickListener {
+        //     // Do something
+        //     toolPopupWindow?.dismiss() // Close the popup after an action
+        // }
+        val xOffset = (anchorView.width - popupView.measuredWidth) / 2
+
+        toolpopwindow?.showAsDropDown(anchorView, xOffset, 0)
+
+    }
     private fun showToast(msg: String) {
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
     }
@@ -227,13 +294,16 @@ class MainActivity : AppCompatActivity() {
         tabs.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {
                 container.removeAllViews()
-                if (tab.position == 0) container.addView(brushView)
+                if (tab.position == 0)
+                    container.addView(brushView)
                 else {
                     container.addView(settingsView)
                     currentBrush?.let {
                         brushname?.text = it.name
                         brushicon?.setImageResource(it.iconRes)
                         updateBrushPreview(it, brushpreview)
+                        sizeSeekBar?.progress = it.strokeWidth.toInt()
+                        opacitySeekBar?.progress = it.opacity
                     }
                 }
             }
@@ -277,6 +347,8 @@ class MainActivity : AppCompatActivity() {
                         updateBrushPreview(selectedbrush, brushpreview)
                         drawingView.setEraser(false)
                         drawingView.setBrush(selectedbrush)
+
+                        opacitySeekBar?.progress = selectedbrush.opacity
                     }
                 }
                 grid.addView(image)
@@ -313,9 +385,9 @@ class MainActivity : AppCompatActivity() {
         }
 
         if (opacitySeekBar != null) {
-            opacitySeekBar.max = 255
+            opacitySeekBar?.max = 255
             // Use drawingView.brushOpacity to set the progress
-            opacitySeekBar.progress = drawingView.brushOpacity
+            opacitySeekBar?.progress = currentBrush?.opacity?: 255
 
             opacitySeekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
                 override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
@@ -328,7 +400,7 @@ class MainActivity : AppCompatActivity() {
                     val colorWithAlpha = (progress shl 24) or baseColor
                     initialColor = colorWithAlpha
 
-                    currentBrush = currentBrush?.copy(color = colorWithAlpha)
+                    currentBrush = currentBrush?.copy(opacity = progress, color = colorWithAlpha)
                     drawingView.setBrushColor(colorWithAlpha)
                     currentBrush?.let { updateBrushPreview(it, brushpreview) }
                 }
@@ -349,6 +421,7 @@ class MainActivity : AppCompatActivity() {
         val paint = Paint().apply {
             color = brush.color
             strokeWidth = brush.strokeWidth
+            alpha = brush.opacity
             style = brush.style
             strokeCap = brush.strokeCap
             strokeJoin = brush.strokeJoin
