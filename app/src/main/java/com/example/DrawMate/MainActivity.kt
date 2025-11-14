@@ -9,6 +9,7 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Path
 import android.graphics.Shader
+import android.os.Build
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
@@ -29,10 +30,12 @@ import android.widget.GridLayout
 import com.example.DrawMate.models.BrushType
 import yuku.ambilwarna.AmbilWarnaDialog
 import android.view.LayoutInflater
+import android.widget.EditText
 import android.widget.PopupWindow
+import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AlertDialog
 
 class MainActivity : AppCompatActivity() {
-
 
     var initialColor = Color.BLACK
     private var isBrushPanelVisible = false
@@ -46,6 +49,7 @@ class MainActivity : AppCompatActivity() {
     private var toolpopwindow: PopupWindow? = null
 
 
+    @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -78,11 +82,25 @@ class MainActivity : AppCompatActivity() {
             popup.setOnMenuItemClickListener { item: MenuItem ->
                 when (item.itemId) {
                     R.id.action_new_sketch -> {
-                        showToast("New Sketch not implemented yet"); true
+                        drawingView.clear()
+                        true
                     }
 
                     R.id.action_save -> {
-                        showToast("Save not implemented yet"); true
+                        val editText = EditText(this).apply {
+                            hint = "Enter drawing name"
+                            setText("drawing_${System.currentTimeMillis()}")  // Pre-fill with default
+                        }
+                        AlertDialog.Builder(this)
+                            .setTitle("Save Drawing")
+                            .setView(editText)
+                            .setPositiveButton("Save") { _, _ ->
+                                val filename = editText.text.toString().trim()
+                                drawingView.saveDrawing(filename)
+                            }
+                            .setNegativeButton("Cancel", null)
+                            .show()
+                        true
                     }
 
                     else -> false
@@ -207,6 +225,7 @@ class MainActivity : AppCompatActivity() {
         toolpopwindow?.showAsDropDown(anchorView, xOffset, 0)
 
     }
+
     private fun showToast(msg: String) {
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
     }
@@ -343,6 +362,7 @@ class MainActivity : AppCompatActivity() {
         populateGrid(halftonegrid, halftoneBrushes)
         populateGrid(inkgrid, inkBrushes)
     }
+
     private fun setupBrushSettings(view: View) {
         val sizeSeekBar = view.findViewById<SeekBar>(R.id.sizeSeekBar)
         val opacitySeekBar = view.findViewById<SeekBar>(R.id.opacitySeekBar)

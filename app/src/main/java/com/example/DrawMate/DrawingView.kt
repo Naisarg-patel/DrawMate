@@ -2,10 +2,16 @@ package com.example.DrawMate
 
 import android.content.Context
 import android.graphics.*
+import android.net.Uri
+import android.os.Build
+import android.os.Environment
+import android.provider.MediaStore
 import android.util.AttributeSet
 import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.View
+import android.widget.Toast
+import androidx.annotation.RequiresApi
 import com.example.DrawMate.models.BrushType
 
 class DrawingView @JvmOverloads constructor(
@@ -13,7 +19,6 @@ class DrawingView @JvmOverloads constructor(
 ) : View(context, attrs, defStyleAttr) {
 
     var onTouchStartListener: (() -> Unit)? = null
-
     private var lastX = 0f
     private var lastY = 0f
 
@@ -185,6 +190,7 @@ class DrawingView @JvmOverloads constructor(
             tempShapeCanvas = Canvas(tempShapeBitmap!!)
         }
     }
+
     private fun handleShapeTouch(event: MotionEvent, x: Float, y: Float) {
         when (event.action) {
             MotionEvent.ACTION_DOWN -> {
@@ -273,6 +279,7 @@ class DrawingView @JvmOverloads constructor(
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
     fun undo() {
         if (strokeList.isNotEmpty()) {
             redoList.add(strokeList.removeLast())
@@ -280,6 +287,7 @@ class DrawingView @JvmOverloads constructor(
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
     fun redo() {
         if (redoList.isNotEmpty()) {
             strokeList.add(redoList.removeLast())
@@ -320,4 +328,43 @@ class DrawingView @JvmOverloads constructor(
         invalidate()
     }
 
+    fun clear() {
+        strokeList.clear()
+        redoList.clear()
+        bufferBitmap?.eraseColor(Color.TRANSPARENT)
+        tempShapeBitmap?.eraseColor(Color.TRANSPARENT)
+        invalidate()
+        Toast.makeText(context, "New sketch ", Toast.LENGTH_SHORT).show()
+    }
+
+    fun saveDrawing(filename: String) {
+        try {
+            val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+            val canvas = Canvas(bitmap)
+            draw(canvas)  // Draw the current view onto the bitmap
+
+            val finalFilename = if (filename.isBlank()) "drawing_${System.currentTimeMillis()}.png" else "$filename.png"
+
+            val contentValues = android.content.ContentValues().apply {
+                put(MediaStore.MediaColumns.DISPLAY_NAME, finalFilename)
+                put(MediaStore.MediaColumns.MIME_TYPE, "image/png")
+                put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_PICTURES + "/DrawMate")
+            }
+            val uri: Uri? = context.contentResolver.insert(
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                contentValues
+            )
+            uri?.let {
+                context.contentResolver.openOutputStream(it)?.use { outputStream ->
+                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
+                }
+                Toast.makeText(context, "Drawing saved", Toast.LENGTH_SHORT).show()
+            } ?: run {
+                Toast.makeText(context, "Failed to save drawing", Toast.LENGTH_SHORT).show()
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Toast.makeText(context, "Error saving drawing", Toast.LENGTH_SHORT).show()
+        }
+    }
 }
