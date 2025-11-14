@@ -7,29 +7,9 @@
         android:title="New Sketch" />
 
     <item
-        android:id="@+id/action_gallery"
-        android:icon="@drawable/gallary"
-        android:title="Gallery" />
-
-    <item
         android:id="@+id/action_save"
         android:icon="@drawable/save"
         android:title="Save" />
-
-    <item
-        android:id="@+id/action_import"
-        android:icon="@drawable/save"
-        android:title="Import from Files" />
-
-    <item
-        android:id="@+id/action_export"
-        android:icon="@drawable/export"
-        android:title="Share / Export" />
-
-    <item
-        android:id="@+id/action_preferences"
-        android:icon="@drawable/preferences"
-        android:title="Preferences" />
 
 
 </menu>

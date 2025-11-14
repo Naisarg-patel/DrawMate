@@ -213,7 +213,15 @@ class DrawingView @JvmOverloads constructor(
             }
             MotionEvent.ACTION_UP -> {
                 currentshape?.let { path ->
-                    bufferCanvas?.drawPath(path, paintBrush)
+                    val stroke = Stroke(
+                        Path(path),
+                        currentBrush.color,
+                        brushSize,
+                        brushOpacity,
+                        isEraser,
+                        if (isEraser) null else currentBrush.textureRes
+                    )
+                    strokeList.add(stroke)
                 }
                 tempShapeBitmap?.eraseColor(Color.TRANSPARENT)
                 currentshape = null
@@ -248,9 +256,6 @@ class DrawingView @JvmOverloads constructor(
                 strokeWidth = stroke.strokeWidth
             }
             canvas.drawPath(stroke.path, paintBrush)
-        }
-        bufferBitmap?.let {
-            canvas.drawBitmap(it, 0f, 0f, null)
         }
 
         currentPath?.let {
