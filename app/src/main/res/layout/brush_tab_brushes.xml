@@ -48,24 +48,6 @@
             android:padding="8dp"
             android:useDefaultMargins="true"/>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Ink"
-            android:textStyle="bold"
-            android:paddingBottom="4dp" />
-
-        <GridLayout
-            android:id="@+id/inkbrushgrid"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:columnCount="5"
-            android:orientation="horizontal"
-            android:alignmentMode="alignMargins"
-            android:gravity="center"
-            android:padding="8dp"
-            android:useDefaultMargins="true"/>
-
     </LinearLayout>
 
 </ScrollView>

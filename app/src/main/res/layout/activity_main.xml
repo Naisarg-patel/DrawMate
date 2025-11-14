@@ -64,7 +64,7 @@
                 android:layout_height="48dp"
                 android:background="@android:color/transparent"
                 android:contentDescription="pencil"
-                android:src="@drawable/pencil" />
+                android:src="@drawable/eraser" />
 
             <!-- Color Picker -->
             <ImageButton
@@ -90,7 +90,7 @@
                 android:layout_height="48dp"
                 android:background="@android:color/transparent"
                 android:contentDescription="Layers"
-                android:src="@drawable/layers" />
+                android:src="@drawable/layer" />
 
 
 

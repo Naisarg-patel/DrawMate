@@ -6,12 +6,12 @@ import com.example.DrawMate.models.BrushType
 
 object BrushLibrary {
     val brushes = listOf(
-        BrushType("Pencil", R.drawable.brush, Color.BLACK, 8f, Paint.Cap.ROUND, category = "basic", opacity = 225),
-        BrushType("Calligraphy", R.drawable.color_wheel, Color.BLACK, 12f, Paint.Cap.SQUARE,Paint.Join.BEVEL, category = "basic", opacity = 225),
-        BrushType("Watercolor", R.drawable.brush, Color.BLACK, 20f, Paint.Cap.ROUND, style = Paint.Style.FILL, category = "basic", opacity = 170),
-        BrushType("Marker", R.drawable.brush, Color.BLACK, 16f, Paint.Cap.BUTT, category = "basic", opacity = 150),
-        BrushType("soft brush", R.drawable.brush, Color.BLACK, 15f, Paint.Cap.ROUND, category = "basic", opacity = 100),
-        BrushType("Hard brush", R.drawable.brush, Color.BLACK, 40f, Paint.Cap.ROUND, category = "basic", opacity = 255),
+        BrushType("Pen", R.drawable.pen, Color.BLACK, 8f, Paint.Cap.ROUND, category = "basic", opacity = 225),
+        BrushType("Calligraphy", R.drawable.calligraphy, Color.BLACK, 12f, Paint.Cap.SQUARE,Paint.Join.BEVEL, category = "basic", opacity = 225),
+        BrushType("Watercolor", R.drawable.watercolor, Color.BLACK, 20f, Paint.Cap.ROUND, style = Paint.Style.FILL, category = "basic", opacity = 170),
+        BrushType("Marker", R.drawable.marker, Color.BLACK, 16f, Paint.Cap.BUTT, category = "basic", opacity = 150),
+        BrushType("soft brush", R.drawable.softbruush, Color.BLACK, 15f, Paint.Cap.ROUND, category = "basic", opacity = 100),
+        BrushType("Hard brush", R.drawable.hardbrush, Color.BLACK, 40f, Paint.Cap.ROUND, category = "basic", opacity = 255),
         BrushType(
             "half tone star",
             R.drawable.halftonestart,

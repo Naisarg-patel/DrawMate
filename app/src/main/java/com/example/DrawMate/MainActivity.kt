@@ -319,7 +319,6 @@ class MainActivity : AppCompatActivity() {
     private fun setupBrushGrid(view: View) {
         val basicgrid = view.findViewById<GridLayout>(R.id.basicbrushgrid)
         val halftonegrid = view.findViewById<GridLayout>(R.id.halftonebrushgrid)
-        val inkgrid = view.findViewById<GridLayout>(R.id.inkbrushgrid)
 
         val displayMetrics = resources.displayMetrics
         val screenWidth = displayMetrics.widthPixels
@@ -329,8 +328,6 @@ class MainActivity : AppCompatActivity() {
 
         val basicBrushes = BrushLibrary.brushes.filter { it.category == "basic" }
         val halftoneBrushes = BrushLibrary.brushes.filter { it.category == "halftone" }
-        val inkBrushes = BrushLibrary.brushes.filter { it.category == "ink" }
-
 
         basicgrid.removeAllViews()
 
@@ -360,7 +357,6 @@ class MainActivity : AppCompatActivity() {
         }
         populateGrid(basicgrid, basicBrushes)
         populateGrid(halftonegrid, halftoneBrushes)
-        populateGrid(inkgrid, inkBrushes)
     }
 
     private fun setupBrushSettings(view: View) {
