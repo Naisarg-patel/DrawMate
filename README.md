@@ -63,7 +63,8 @@ It includes brush customization, textured brushes, shapes, eraser, and more.
       <b>Canvas:</b><br>
       Draw smooth and responsive strokes using finger or stylus. Optimized for low-latency, natural sketching.
     </td>
-    <td>canvas.png</td>
+    <td><img width="350" height="650" alt="image" src="https://github.com/user-attachments/assets/e1e5096b-0a53-429f-810f-b908b706d113" />
+</td>
   </tr>
 
   <tr>
@@ -76,7 +77,9 @@ It includes brush customization, textured brushes, shapes, eraser, and more.
       • Stamp / halftone brushes<br>
       • Live brush preview (color, size, opacity, texture, brush icon & name)
     </td>
-    <td>brushes.png</td>
+    <td><img width="350" height="650" alt="image" src="https://github.com/user-attachments/assets/78f83d8a-443e-43af-8957-9c5b186f9aa5" />
+    <img width="350" height="650" alt="image" src="https://github.com/user-attachments/assets/5800480b-0004-473b-949a-005850e549f9" />
+<img width="350" height="650" alt="image" src="https://github.com/user-attachments/assets/3cae21d1-4385-4453-9aca-832546944f17" /></td>
   </tr>
 
   <tr>
@@ -140,3 +143,6 @@ It includes brush customization, textured brushes, shapes, eraser, and more.
   </tr>
 
 </table>
+
+
+
