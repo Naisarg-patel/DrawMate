@@ -8,7 +8,7 @@
     android:background="@android:color/white">
 
     <!-- Top toolbar -->
-    <HorizontalScrollView
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="55dp"
         android:scrollbars="none">
@@ -20,7 +20,7 @@
             android:gravity="center_vertical"
             android:background="?attr/colorPrimary"
             android:orientation="horizontal"
-            android:paddingHorizontal="14dp">
+            android:paddingHorizontal="13dp">
 
             <!-- Main Menu -->
             <ImageButton
@@ -95,7 +95,7 @@
 
         </LinearLayout>
 
-    </HorizontalScrollView>
+    </FrameLayout>
 
     <FrameLayout
         android:id="@+id/canvasContainer"
