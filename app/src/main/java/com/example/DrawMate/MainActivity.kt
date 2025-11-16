@@ -1,6 +1,7 @@
 
 package com.example.DrawMate
 
+import android.R.attr.height
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.BitmapShader
@@ -29,9 +30,11 @@ import android.widget.GridLayout
 import com.example.DrawMate.models.BrushType
 import yuku.ambilwarna.AmbilWarnaDialog
 import android.view.LayoutInflater
+import android.view.WindowManager
 import android.widget.EditText
 import android.widget.PopupWindow
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
 
 class MainActivity : AppCompatActivity() {
 
@@ -47,14 +50,14 @@ class MainActivity : AppCompatActivity() {
     private var toolpopwindow: PopupWindow? = null
     private var istoolbarVisible = true
 
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_main)
 
-
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
+        window.statusBarColor = ContextCompat.getColor(this@MainActivity, R.color.black)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
