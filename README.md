@@ -158,6 +158,3 @@ It includes brush customization, textured brushes, shapes, eraser, and more.
 
 
 
-
-
-
