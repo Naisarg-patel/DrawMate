@@ -54,77 +54,89 @@ It includes brush customization, textured brushes, shapes, eraser, and more.
 
 <table>
   <tr>
-    <th>
-      Features:
-    </th>
-    <th>
-      Screenshorts:
-    </th>
+    <th>Features</th>
+    <th>Screenshots</th>
   </tr>
+
   <tr>
     <td>
-      <b>Canvas:</b>
-      User can draw smooth stroke using fingure or stylus pen.
+      <b>Canvas:</b><br>
+      Draw smooth and responsive strokes using finger or stylus. Optimized for low-latency, natural sketching.
     </td>
-    <td>canvas sc</td>
+    <td>canvas.png</td>
   </tr>
+
   <tr>
-    <td><b>Brush Engine:</b>
-      User can select multiple brushes with customizable properties like size, opacity of stroke. App has default manydDifferent strokes, textured strokes with customizable properties, User can change colour of stroke using colour picker tool
-    also app provide live preview of stroke like which colour stoke has, size, opacity of stroke, textured of stroke and how stroke look like in canvas with selected brush image with selected brush name.
-      <td> all brush options sc</td>
-  </tr>
-  <tr>
-    <td><b>colour picker:</b>
-    Using colour picker tools user can change colour of stroke and shapes.
-    </td>
-    <td>colour pickert sc</td>
-  </tr>
-  <tr>
-    <td><b>Eraser:</b>
-    Using eraser tool user can erase brush strokes, shape strokes and textured stroke. Application provide trasferent colour engine to erase pickel of strokes.
-    </td>
-    <td>eraser sc</td>
-  </tr>
-  <tr>
-    <td><b>Shape tools:</b>
-    Application provide user shapes like squrase, circles, straight line with adjestable boundries with colour option with stroke size.
-    </td>
     <td>
-      shape sc
+      <b>Brush Engine:</b><br>
+      Choose from multiple brush types with fully customizable settings such as stroke size, opacity, texture, and color.
+      Includes:<br>
+      • Basic brushes<br>
+      • Textured brushes<br>
+      • Stamp / halftone brushes<br>
+      • Live brush preview (color, size, opacity, texture, brush icon & name)
     </td>
+    <td>brushes.png</td>
   </tr>
+
   <tr>
-    <td><b>Undo or Redo:</b>
-    User can undo or redo strokes, shapes, any erased stroke using undo or redo tools.provide Unlimited undo/redo history. 
-    </td>
-    <td> undo redo sc</td>
-  </tr>
-  <tr>
-    <td><b>
-      layer:</b>
-      using layer user can access full canvas for drawing. layer tool hide tool bar for full canvas.
-    </td>
     <td>
-      layer sc
+      <b>Color Picker:</b><br>
+      Integrated HSB/HSV color wheel that allows users to pick any color instantly for both brushes and shapes.
     </td>
+    <td>color_picker.png</td>
   </tr>
+
   <tr>
-    <td><b>
-      new canvas:</b>
-      user can create new blank canvas any time.
-    </td>
     <td>
-      new canvas sc
+      <b>Eraser:</b><br>
+      High-precision eraser that supports pixel-level clearing using a transparent stroke engine. Works on all brush types and shapes.
     </td>
+    <td>eraser.png</td>
   </tr>
+
   <tr>
-    <td><b>
-      save:</b>
-          after completion of drawing user need to save drawing, so save tools provide save image as png formate in device with changeble name of image if user not want to change name system automatically apply date and time of saving as image name.
-    </td>
     <td>
-      save sc
+      <b>Shape Tools:</b><br>
+      Draw adjustable geometric shapes including:<br>
+      • Rectangle<br>
+      • Circle / Ellipse<br>
+      • Straight Line<br>
+      Shapes can be resized dynamically and support color, stroke size, and opacity adjustments.
     </td>
+    <td>shapes.png</td>
   </tr>
+
+  <tr>
+    <td>
+      <b>Undo / Redo:</b><br>
+      Unlimited undo/redo history for brush strokes, shapes, and eraser actions.
+    </td>
+    <td>undo_redo.png</td>
+  </tr>
+
+  <tr>
+    <td>
+      <b>Layer Mode:</b><br>
+      Enables distraction-free drawing by hiding the toolbar and expanding the canvas to full screen. Tap again to restore tools.
+    </td>
+    <td>layer_mode.png</td>
+  </tr>
+
+  <tr>
+    <td>
+      <b>New Canvas:</b><br>
+      Instantly create a fresh blank canvas without restarting the app.
+    </td>
+    <td>new_canvas.png</td>
+  </tr>
+
+  <tr>
+    <td>
+      <b>Save Artwork:</b><br>
+      Save your drawing as a high-quality PNG image. Users can enter a custom file name, or the system will auto-generate one based on date and time.
+    </td>
+    <td>save.png</td>
+  </tr>
+
 </table>
