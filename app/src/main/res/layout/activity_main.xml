@@ -18,8 +18,9 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center_vertical"
+            android:background="?attr/colorPrimary"
             android:orientation="horizontal"
-            android:paddingHorizontal="13dp">
+            android:paddingHorizontal="14dp">
 
             <!-- Main Menu -->
             <ImageButton
@@ -126,7 +127,7 @@
             android:layout_height="48dp"
             android:layout_gravity="top|end"
             android:layout_margin="13dp"
-            android:src="@drawable/layer"
+            android:src="@drawable/layer1"
             android:background="@android:color/transparent"
             android:visibility="gone"
             android:elevation="30dp" />

@@ -3,5 +3,5 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="background_tab">#E2D9CA</color>
-    <color name="icon_color">#574407</color>
+    <color name="background_tab1">#574407</color>
 </resources>

@@ -9,7 +9,6 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Path
 import android.graphics.Shader
-import android.os.Build
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
@@ -32,7 +31,6 @@ import yuku.ambilwarna.AmbilWarnaDialog
 import android.view.LayoutInflater
 import android.widget.EditText
 import android.widget.PopupWindow
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 
 class MainActivity : AppCompatActivity() {

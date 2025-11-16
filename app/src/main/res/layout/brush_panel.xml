@@ -14,10 +14,10 @@
         android:id="@+id/brushTabs"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/background_tab"
-        app:tabIndicatorColor="@color/black"
-        app:tabSelectedTextColor="@color/black"
-        app:tabTextColor="@android:color/black">
+        android:background="?attr/colorPrimary"
+        app:tabIndicatorColor="?attr/colorOnPrimary"
+        app:tabSelectedTextColor="?attr/colorOnPrimary"
+        app:tabTextColor="?attr/colorOnPrimary">
 
         <com.google.android.material.tabs.TabItem
             android:layout_height="wrap_content"
@@ -33,7 +33,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:background="@color/background_tab"
+        android:background="?attr/colorPrimary"
         android:gravity="center_vertical">
 
         <ImageView
@@ -57,7 +57,7 @@
         android:layout_width="match_parent"
         android:layout_height="100dp"
         android:layout_marginTop="0dp"
-        android:background="@color/background_tab"
+        android:background="?attr/colorPrimary"
         android:adjustViewBounds="true" />
 
     <!-- Container for brushes/settings -->
@@ -65,5 +65,5 @@
         android:id="@+id/brushContentContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/background_tab"/>
+        android:background="?attr/colorPrimary"/>
 </LinearLayout>

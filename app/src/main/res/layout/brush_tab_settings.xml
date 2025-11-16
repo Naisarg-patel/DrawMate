@@ -5,13 +5,12 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="16dp"
-    android:background="@color/background_tab">
+    android:background="?attr/colorPrimary">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Brush Size"
-        android:textColor="@android:color/black"
         android:textStyle="bold"
         android:layout_marginTop="12dp"/>
 
@@ -27,7 +26,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Opacity"
-        android:textColor="@android:color/black"
         android:textStyle="bold"
         android:layout_marginTop="12dp"/>
 
