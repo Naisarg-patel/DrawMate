@@ -11,10 +11,10 @@
     <HorizontalScrollView
         android:layout_width="match_parent"
         android:layout_height="55dp"
-        android:background="#F5F5F5"
         android:scrollbars="none">
 
         <LinearLayout
+            android:id="@+id/toolBar"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center_vertical"
@@ -92,9 +92,8 @@
                 android:contentDescription="Layers"
                 android:src="@drawable/layer" />
 
-
-
         </LinearLayout>
+
     </HorizontalScrollView>
 
     <FrameLayout
@@ -121,7 +120,16 @@
             android:translationY="-600dp"
             android:elevation="20dp" />
 
-
+        <ImageButton
+            android:id="@+id/btnRestoreToolbar"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="top|end"
+            android:layout_margin="13dp"
+            android:src="@drawable/layer"
+            android:background="@android:color/transparent"
+            android:visibility="gone"
+            android:elevation="30dp" />
 
     </FrameLayout>
 

@@ -47,13 +47,15 @@ class MainActivity : AppCompatActivity() {
     private var sizeSeekBar: SeekBar? = null
     private var opacitySeekBar: SeekBar? = null
     private var toolpopwindow: PopupWindow? = null
+    private var istoolbarVisible = true
 
 
-    @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_main)
+
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -73,6 +75,8 @@ class MainActivity : AppCompatActivity() {
         val btnBrush: ImageButton = findViewById(R.id.Brushbtn)
         val btnColor: ImageButton = findViewById(R.id.btnColorPicker)
         val btnLayers: ImageButton = findViewById(R.id.btnLayers)
+        val toolBar: View = findViewById(R.id.toolBar)
+        val btnRestoreToolbar: ImageButton = findViewById(R.id.btnRestoreToolbar)
 
         btnMenu.setOnClickListener { view ->
             val popup = PopupMenu(this, view)
@@ -168,7 +172,42 @@ class MainActivity : AppCompatActivity() {
 
 
         btnLayers.setOnClickListener {
-            showToast("Layers not implemented yet")
+            if (istoolbarVisible) {
+
+                // HIDE toolbar
+                toolBar.animate()
+                    .translationY(-toolBar.height.toFloat())
+                    .setDuration(200)
+                    .withEndAction { toolBar.visibility = View.GONE }
+                    .start()
+
+                btnRestoreToolbar.visibility = View.VISIBLE
+                istoolbarVisible = false
+
+            } else {
+
+                // SHOW toolbar
+                toolBar.visibility = View.VISIBLE
+                toolBar.translationY = -toolBar.height.toFloat()
+
+                toolBar.animate()
+                    .translationY(0f)
+                    .setDuration(200)
+                    .start()
+
+                btnRestoreToolbar.visibility = View.GONE
+                istoolbarVisible = true
+            }
+        }
+
+        btnRestoreToolbar.setOnClickListener {
+            // Press to restore toolbar
+            toolBar.visibility = View.VISIBLE
+            toolBar.translationY = -toolBar.height.toFloat()
+            toolBar.animate().translationY(0f).setDuration(200).start()
+
+            btnRestoreToolbar.visibility = View.GONE
+            istoolbarVisible = true
         }
 
 

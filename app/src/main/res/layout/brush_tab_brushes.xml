@@ -3,14 +3,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!-- 🔴 Top Row: Brush Info + Toggle Button -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
+        android:background="@color/background_tab"
         android:padding="8dp">
 
-        <!-- 🟡 Brush Stroke Preview -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -18,7 +17,6 @@
             android:textStyle="bold"
             android:paddingBottom="4dp" />
 
-        <!-- Grid of Brushes -->
         <GridLayout
             android:id="@+id/basicbrushgrid"
             android:layout_width="match_parent"

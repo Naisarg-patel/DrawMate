@@ -279,7 +279,6 @@ class DrawingView @JvmOverloads constructor(
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
     fun undo() {
         if (strokeList.isNotEmpty()) {
             redoList.add(strokeList.removeLast())
@@ -287,7 +286,6 @@ class DrawingView @JvmOverloads constructor(
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
     fun redo() {
         if (redoList.isNotEmpty()) {
             strokeList.add(redoList.removeLast())
