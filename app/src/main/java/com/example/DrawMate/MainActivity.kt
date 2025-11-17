@@ -1,7 +1,6 @@
 
 package com.example.DrawMate
 
-import android.R.attr.height
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.BitmapShader
@@ -58,6 +57,7 @@ class MainActivity : AppCompatActivity() {
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
         window.statusBarColor = ContextCompat.getColor(this@MainActivity, R.color.black)
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
@@ -94,7 +94,7 @@ class MainActivity : AppCompatActivity() {
                     R.id.action_save -> {
                         val editText = EditText(this).apply {
                             hint = "Enter drawing name"
-                            setText("drawing_${System.currentTimeMillis()}")  // Pre-fill with default
+                            setText("drawing_${System.currentTimeMillis()}")
                         }
                         AlertDialog.Builder(this)
                             .setTitle("Save Drawing")
@@ -175,7 +175,6 @@ class MainActivity : AppCompatActivity() {
         btnLayers.setOnClickListener {
             if (istoolbarVisible) {
 
-                // HIDE toolbar
                 toolBar.animate()
                     .translationY(-toolBar.height.toFloat())
                     .setDuration(200)
@@ -187,7 +186,6 @@ class MainActivity : AppCompatActivity() {
 
             } else {
 
-                // SHOW toolbar
                 toolBar.visibility = View.VISIBLE
                 toolBar.translationY = -toolBar.height.toFloat()
 
@@ -202,7 +200,6 @@ class MainActivity : AppCompatActivity() {
         }
 
         btnRestoreToolbar.setOnClickListener {
-            // Press to restore toolbar
             toolBar.visibility = View.VISIBLE
             toolBar.translationY = -toolBar.height.toFloat()
             toolBar.animate().translationY(0f).setDuration(200).start()

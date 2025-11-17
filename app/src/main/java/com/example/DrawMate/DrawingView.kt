@@ -3,7 +3,6 @@ package com.example.DrawMate
 import android.content.Context
 import android.graphics.*
 import android.net.Uri
-import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
 import android.util.AttributeSet
@@ -11,7 +10,6 @@ import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.View
 import android.widget.Toast
-import androidx.annotation.RequiresApi
 import com.example.DrawMate.models.BrushType
 
 class DrawingView @JvmOverloads constructor(
@@ -45,7 +43,7 @@ class DrawingView @JvmOverloads constructor(
         val strokeWidth: Float,
         val alpha: Int,
         val isEraser: Boolean,
-        val textureResId: Int? = null // To remember if a stroke was textured
+        val textureResId: Int? = null
     )
 
     private val strokeList = ArrayList<Stroke>()
@@ -70,7 +68,7 @@ class DrawingView @JvmOverloads constructor(
     var brushSize: Float = 20f
         set(value) {
             field = value.coerceIn(1f, 200f)
-            updatePaint() // updatePaint handles applying the size
+            updatePaint()
             invalidate()
         }
 
@@ -78,7 +76,7 @@ class DrawingView @JvmOverloads constructor(
         get() = currentBrush.opacity
         set(value) {
             currentBrush = currentBrush.copy(opacity = value)
-            updatePaint() // updatePaint handles applying the opacity
+            updatePaint()
             invalidate()
         }
 
@@ -99,26 +97,21 @@ class DrawingView @JvmOverloads constructor(
 
     private fun updatePaint() {
         paintBrush.apply {
-            // Reset shader and color filter from previous state
             shader = null
             colorFilter = null
 
             strokeWidth = brushSize
             xfermode = if (isEraser) {
-                // Eraser mode
                 PorterDuffXfermode(PorterDuff.Mode.CLEAR)
             } else if (currentBrush.textureRes != null) {
-                // Textured brush mode
                 shader = getTexture(currentBrush.textureRes!!)
-                // Use a color filter to tint the texture with the brush color
                 colorFilter = PorterDuffColorFilter(currentBrush.color, PorterDuff.Mode.SRC_IN)
-                alpha = brushOpacity // Still respect the overall opacity
-                null // Clear xfermode if it was set
+                alpha = brushOpacity
+                null
             } else {
-                // Solid color brush mode
                 color = currentBrush.color
                 alpha = currentBrush.opacity
-                null // Clear xfermode
+                null
             }
         }
     }
@@ -339,7 +332,7 @@ class DrawingView @JvmOverloads constructor(
         try {
             val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
             val canvas = Canvas(bitmap)
-            draw(canvas)  // Draw the current view onto the bitmap
+            draw(canvas)
 
             val finalFilename = if (filename.isBlank()) "drawing_${System.currentTimeMillis()}.png" else "$filename.png"
 

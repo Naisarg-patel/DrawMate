@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
@@ -9,84 +8,66 @@
     android:background="@android:color/white"
     tools:context=".MainActivity">
 
-    <View
-        android:id="@+id/statusBarBackground"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:background="@color/black"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-
-
-    <!-- Top toolbar -->
-    <FrameLayout
+    <HorizontalScrollView
+        android:id="@+id/toolBar"
         android:layout_width="match_parent"
         android:layout_height="55dp"
+        android:background="?attr/colorPrimary"
         android:scrollbars="none">
 
         <LinearLayout
-            android:id="@+id/toolBar"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:gravity="center_vertical"
-            android:background="?attr/colorPrimary"
             android:orientation="horizontal"
             android:paddingHorizontal="13dp">
 
-            <!-- Main Menu -->
             <ImageButton
                 android:id="@+id/btnMenu"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:background="@android:color/transparent"
-                android:contentDescription="Menu"
+                android:contentDescription="@string/menu"
                 android:src="@drawable/menu" />
 
-            <!-- Undo -->
             <ImageButton
                 android:id="@+id/btnUndo"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:background="@android:color/transparent"
-                android:contentDescription="Undo"
+                android:contentDescription="@string/undo"
                 android:src="@drawable/undo" />
 
-            <!-- Redo -->
             <ImageButton
                 android:id="@+id/btnRedo"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:background="@android:color/transparent"
-                android:contentDescription="Redo"
+                android:contentDescription="@string/redo"
                 android:src="@drawable/redo" />
 
-            <!-- Tools (13 options) -->
             <ImageButton
                 android:id="@+id/btnTools"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:background="@android:color/transparent"
-                android:contentDescription="Tools"
+                android:contentDescription="@string/tools"
                 android:src="@drawable/tools" />
 
-            <!-- Brush -->
             <ImageButton
                 android:id="@+id/btnEraser"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:background="@android:color/transparent"
-                android:contentDescription="pencil"
+                android:contentDescription="@string/pencil"
                 android:src="@drawable/eraser" />
 
-            <!-- Color Picker -->
             <ImageButton
                 android:id="@+id/Brushbtn"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:background="@android:color/transparent"
-                android:contentDescription="brush"
+                android:contentDescription="@string/brush"
                 android:src="@drawable/brush" />
 
             <ImageButton
@@ -94,21 +75,20 @@
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:background="@android:color/transparent"
-                android:contentDescription="Color Picker"
+                android:contentDescription="@string/color_picker"
                 android:src="@drawable/color_wheel" />
 
-            <!-- Layers -->
             <ImageButton
                 android:id="@+id/btnLayers"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:background="@android:color/transparent"
-                android:contentDescription="Layers"
+                android:contentDescription="@string/layers"
                 android:src="@drawable/layer" />
 
         </LinearLayout>
 
-    </FrameLayout>
+    </HorizontalScrollView>
 
     <FrameLayout
         android:id="@+id/canvasContainer"
@@ -116,20 +96,17 @@
         android:layout_height="0dp"
         android:layout_weight="1">
 
-        <!-- Drawing Canvas -->
         <com.example.DrawMate.DrawingView
             android:id="@+id/drawingView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@android:color/white" />
 
-        <!-- Include Brush Panel -->
         <include
             android:id="@+id/brushPanel"
             layout="@layout/brush_panel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
             android:visibility="gone"
             android:translationY="-600dp"
             android:elevation="20dp" />
@@ -140,6 +117,7 @@
             android:layout_height="48dp"
             android:layout_gravity="top|end"
             android:layout_margin="13dp"
+            android:contentDescription="@string/toolbarrestorebutton"
             android:src="@drawable/layer1"
             android:background="@android:color/transparent"
             android:visibility="gone"

@@ -8,12 +8,12 @@
         <item
             android:id="@+id/action_new_sketch"
             android:icon="@drawable/baseline_add_24"
-            android:title="New Sketch" />
+            android:title="@string/new_sketch" />
 
         <item
             android:id="@+id/action_save"
             android:icon="@drawable/save"
-            android:title="Save" />
+            android:title="@string/save" />
     </group>
 
 </menu>

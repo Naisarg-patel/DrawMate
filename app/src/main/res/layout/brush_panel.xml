@@ -9,7 +9,6 @@
     android:elevation="12dp"
     android:padding="8dp">
 
-    <!-- Top Tabs -->
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/brushTabs"
         android:layout_width="match_parent"
@@ -22,11 +21,11 @@
         <com.google.android.material.tabs.TabItem
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
-            android:text="Brushes" />
+            android:text="@string/brushes" />
         <com.google.android.material.tabs.TabItem
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
-            android:text="Settings" />
+            android:text="@string/settings" />
     </com.google.android.material.tabs.TabLayout>
 
     <LinearLayout
@@ -40,7 +39,8 @@
             android:id="@+id/selectedBrushIcon"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:layout_marginEnd="8dp" />
+            android:layout_marginEnd="8dp"
+            android:contentDescription="@string/brushesicon" />
 
         <TextView
             android:id="@+id/selectedBrushName"
@@ -58,9 +58,9 @@
         android:layout_height="100dp"
         android:layout_marginTop="0dp"
         android:background="?attr/colorPrimary"
-        android:adjustViewBounds="true" />
+        android:adjustViewBounds="true"
+        android:contentDescription="@string/previewstroke" />
 
-    <!-- Container for brushes/settings -->
     <FrameLayout
         android:id="@+id/brushContentContainer"
         android:layout_width="match_parent"
